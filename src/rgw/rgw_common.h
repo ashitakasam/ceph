@@ -219,6 +219,7 @@ using ceph::crypto::MD5;
 #define ERR_INVALID_ENCRYPTION_ALGORITHM                 2214
 #define ERR_INVALID_CORS_RULES_ERROR                     2215
 #define ERR_NO_CORS_FOUND        2216
+#define ERR_BUCKET_PINNED        2217
 
 #define ERR_BUSY_RESHARDING      2300
 
@@ -1374,7 +1375,7 @@ struct RGWBucketInfo {
   }
 
   RGWBucketInfo() : flags(0), has_instance_obj(false), num_shards(0), bucket_index_shard_hash_type(MOD), requester_pays(false),
-                    has_website(false), swift_versioning(false), reshard_status(0), pinned(true) {}
+                    has_website(false), swift_versioning(false), reshard_status(0), pinned(false) {}
 };
 WRITE_CLASS_ENCODER(RGWBucketInfo)
 

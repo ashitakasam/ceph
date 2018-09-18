@@ -2979,6 +2979,11 @@ void RGWCreateBucket::execute()
 
 int RGWDeleteBucket::verify_permission()
 {
+  if (s->bucket_info.pinned) {
+    s->err.message = "The bucket you requested has been pinned and please contact the administrator.";
+    return -ERR_BUCKET_PINNED;
+  }
+
   if (!verify_bucket_permission(s, rgw::IAM::s3DeleteBucket)) {
     return -EACCES;
   }
@@ -3090,8 +3095,10 @@ void RGWDeleteBucket::execute()
 int RGWPutObj::verify_permission()
 {
 
-  if (s->bucket_info.pinned)
-    return -EACCES;
+  if (s->bucket_info.pinned) {
+    s->err.message = "The bucket you requested has been pinned and please contact the administrator.";
+    return -ERR_BUCKET_PINNED;
+  }
 
   if (! copy_source.empty()) {
 
@@ -4374,6 +4381,11 @@ int RGWDeleteObj::handle_slo_manifest(bufferlist& bl)
 
 int RGWDeleteObj::verify_permission()
 {
+  if (s->bucket_info.pinned) {
+    s->err.message = "The bucket you requested has been pinned and please contact the administrator.";
+    return -ERR_BUCKET_PINNED;
+  }
+
   if (s->iam_policy) {
     auto r = s->iam_policy->eval(s->env, *s->auth.identity,
 				 s->object.instance.empty() ?
@@ -5962,6 +5974,11 @@ void RGWGetHealthCheck::execute()
 
 int RGWDeleteMultiObj::verify_permission()
 {
+  if (s->bucket_info.pinned) {
+    s->err.message = "The bucket you requested has been pinned and please contact the administrator.";
+    return -ERR_BUCKET_PINNED;
+  }
+
   acl_allowed = verify_bucket_permission_no_policy(s, RGW_PERM_WRITE);
   if (!acl_allowed && !s->iam_policy)
     return -EACCES;
